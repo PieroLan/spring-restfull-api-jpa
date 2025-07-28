@@ -16,40 +16,43 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    // Método para obtener todos los productos
     @Override
     @Transactional(readOnly = true) // Optimización para lectura
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
+    // Método para obtener un producto por su ID
     @Override
     @Transactional(readOnly = true) // Optimización para lectura
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }
 
+    // Método para guardar un producto
     @Override
-    public Product createProduct(Product product) {
+    public Product save(Product product) {
         return productRepository.save(product);
     }
 
+    // Método para eliminar un producto por su ID
     @Override
-    public Product updateProduct(Long id, Product product) {
-        // Verificar que el producto existe
-        if (productRepository.existsById(id)) {
-            product.setId(id); // Asegurar que tenga el ID correcto
-            return productRepository.save(product);
-        }
-        throw new RuntimeException("Producto con ID " + id + " no encontrado");
+    public Optional<Product> deleteProduct(Long id) {
+        // Verificamos si el producto existe
+        Optional<Product> productFind = productRepository.findById(id);
+
+        // Si hay algo dentro del Optional, ejecuta esta acción. Si está vacío, no hagas
+        // nada:
+        productFind.ifPresent(product -> productRepository.deleteById(product.getId())); // expresion LAMBDA (funcion anonima)
+        return productFind;
     }
 
+    // Método para actualizar un producto (todavía no implementado)
     @Override
-    public void deleteProduct(Long id) {
-        if (productRepository.existsById(id)) {
-            productRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Producto con ID " + id + " no encontrado");
-        }
+    public Optional<Product> updateProduct(Long id, Product product) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateProduct'");
     }
 
 }
