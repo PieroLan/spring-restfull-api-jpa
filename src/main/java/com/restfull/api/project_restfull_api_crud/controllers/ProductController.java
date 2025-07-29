@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/api/products")
@@ -50,6 +52,17 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product createdProduct = productService.save(product);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    }
+
+    //Actualizar un producto por ID
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        Optional<Product> productFound = productService.update(id, product);
+        if (productFound.isPresent()) {
+            return new ResponseEntity<>(productFound.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Producto no encontrado", HttpStatus.NOT_FOUND);
+        }
     }
 
     //Eliminar un producto por ID

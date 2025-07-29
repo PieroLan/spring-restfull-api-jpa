@@ -36,6 +36,20 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
+    // Método para actualizar un producto
+    @Override
+    public Optional<Product> update(Long id, Product product) {
+        Optional<Product> productFind = productRepository.findById(id);
+        if (productFind.isPresent()) {
+            Product productDb = productFind.get();
+            productDb.setName(product.getName());
+            productDb.setPrice(product.getPrice());
+            productDb.setDescription(product.getDescription());
+            return Optional.of(productRepository.save(productDb));
+        }
+        return productFind;
+    }
+
     // Método para eliminar un producto por su ID
     @Override
     public Optional<Product> deleteProduct(Long id) {
@@ -47,12 +61,4 @@ public class ProductServiceImpl implements ProductService {
         productFind.ifPresent(product -> productRepository.deleteById(product.getId())); // expresion LAMBDA (funcion anonima)
         return productFind;
     }
-
-    // Método para actualizar un producto (todavía no implementado)
-    @Override
-    public Optional<Product> updateProduct(Long id, Product product) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateProduct'");
-    }
-
 }
